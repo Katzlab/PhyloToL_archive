@@ -1,7 +1,7 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3
 
-##__Updated__: 20_09_2017
-##__Author__: Xyrus Maurer-Alcala; maurerax@gmail.com
+##__Updated__: 2020-08-24
+##__Author__: Xyrus Maurer-Alcala; maurerax@gmail.com; xyrus.maurer-alcala@izb.unibe.ch
 ##__Usage__: python 5_GCodeTranslate.py --help
 
 
@@ -38,7 +38,7 @@ from Bio.Data.CodonTable import CodonTable
 blepharisma_table = CodonTable(forward_table={
 	'TTT': 'F', 'TTC': 'F', 'TTA': 'L', 'TTG': 'L',
 	'TCT': 'S', 'TCC': 'S', 'TCA': 'S', 'TCG': 'S',
-	'TAT': 'Y', 'TAC': 'Y',                       
+	'TAT': 'Y', 'TAC': 'Y',
 	'TGT': 'C', 'TGC': 'C', 'TGA': 'W', 'TGG': 'W',
 	'CTT': 'L', 'CTC': 'L', 'CTA': 'L', 'CTG': 'L',
 	'CCT': 'P', 'CCC': 'P', 'CCA': 'P', 'CCG': 'P',
@@ -98,7 +98,7 @@ c_uncinata_table = CodonTable(forward_table={
 euplotes_table = CodonTable(forward_table={
 	'TTT': 'F', 'TTC': 'F', 'TTA': 'L', 'TTG': 'L',
 	'TCT': 'S', 'TCC': 'S', 'TCA': 'S', 'TCG': 'S',
-	'TAT': 'Y', 'TAC': 'Y',                       
+	'TAT': 'Y', 'TAC': 'Y',
 	'TGT': 'C', 'TGC': 'C', 'TGA': 'C', 'TGG': 'W',
 	'CTT': 'L', 'CTC': 'L', 'CTA': 'L', 'CTG': 'L',
 	'CCT': 'P', 'CCC': 'P', 'CCA': 'P', 'CCG': 'P',
@@ -174,11 +174,11 @@ peritrich_table = CodonTable(forward_table={
 	'GGT': 'G', 'GGC': 'G', 'GGA': 'G', 'GGG': 'G'},
 	start_codons = [ 'ATG'],
 	stop_codons = ['TGA'])
-	
+
 tag_table = CodonTable(forward_table={
 	'TTT': 'F', 'TTC': 'F', 'TTA': 'L', 'TTG': 'L',
 	'TCT': 'S', 'TCC': 'S', 'TCA': 'S', 'TCG': 'S',
-	'TAT': 'Y', 'TAC': 'Y', 'TAA': 'Q',            
+	'TAT': 'Y', 'TAC': 'Y', 'TAA': 'Q',
 	'TGT': 'C', 'TGC': 'C', 'TGA': 'Q', 'TGG': 'W',
 	'CTT': 'L', 'CTC': 'L', 'CTA': 'L', 'CTG': 'L',
 	'CCT': 'P', 'CCC': 'P', 'CCA': 'P', 'CCG': 'P',
@@ -224,9 +224,9 @@ def check_args():
 	'given Fasta file of CDS\nsequences using a given'+color.PURPLE+' Genetic Code.'+color.END+\
 	color.BOLD+usage_msg(), usage=SUPPRESS, formatter_class=RawTextHelpFormatter)
 
-	
+
 	required_arg_group = parser.add_argument_group(color.ORANGE+color.BOLD+'Required Options'+color.END)
- 
+
 	required_arg_group.add_argument('--input_file','-in', action='store',
 	help=color.BOLD+color.GREEN+' Fasta file with CDSs\n'+color.END)
 
@@ -253,18 +253,14 @@ def check_args():
 		sys.exit()
 
 	args = parser.parse_args()
-	
-	try:
-		args.tsv_file = args.input_file.replace('.fasta','_allOGCleanresults.tsv')
-	except:
-		args.tsv_file = None
 
 	quit_eval = return_more_info(args)
 	if quit_eval > 0:
 		sys.exit()
-		
-	### Adding in names to 'arg' class for more easy use throughout the script	
-	
+
+	args.tsv_file = args.input_file.replace('.fasta','_allOGCleanresults.tsv')
+
+	### Adding in names to 'arg' class for more easy use throughout the script
 	args.ntd_out = args.input_file.split('.fas')[0]+'_'+args.genetic_code.title()+'_NTD.ORF.fasta'
 	args.aa_out = args.input_file.split('.fas')[0]+'_'+args.genetic_code.title()+'_AA.ORF.fasta'
 	args.tsv_out = args.input_file.split('.fas')[0]+'_'+args.genetic_code.title()+'_allOGCleanresults.tsv'
@@ -275,8 +271,8 @@ def check_args():
 	args.ForPartials = '../FinalizeTranscripts/'
 
 	return args
-	
-	
+
+
 ###########################################################################################
 ###------------------------------- Script Usage Message --------------------------------###
 ###########################################################################################
@@ -297,11 +293,12 @@ def return_more_info(args):
 
 	supported_gcodes_names = ['bleph','blepharisma','chilo','chilodonella','condy',\
 	'condylostoma','none','eup','euplotes','peritrich','vorticella','ciliate','universal',\
-	'taa','tag','tga', 'mesodinium']
+	'taa','tag','tga', 'mesodinium', 'myrionecta']
 
 	supported_gcodes_list = ['Blepharisma\t(TGA = W)','Chilodonella\t(TAG/TGA = Q)','Ciliate\t\t(TAR = Q)',\
-	'Conylostoma\t(TAR = Q, TGA = W)','Euplotes\t(TGA = C)','Peritrich\t(TAR = E)','None\t\t(TGA/TAG/TAA = X)',\
-	'Universal\t(TGA/TAG/TAA = STOP)','TAA\t\t(TAG/TGA = Q)', 'TAG\t\t(TRA = Q)', 'TGA\t\t(TAR = Q)']
+	'Conylostoma\t(TAR = Q, TGA = W)','Euplotes\t(TGA = C)','Peritrich\t(TAR = E)','Mesodinium\t(TAR = Y)',\
+	'Myrionecta\t(TAR = Y)','None\t\t(TGA/TAG/TAA = X)','Universal\t(TGA/TAG/TAA = STOP)',\
+	'TAA\t\t(TAG/TGA = Q)', 'TAG\t\t(TRA = Q)', 'TGA\t\t(TAR = Q)']
 
 	author = (color.BOLD+color.ORANGE+'\n\n\tQuestions/Comments? Email Xyrus (author) at'\
 	' maurerax@gmail.com\n\n'+color.END)
@@ -314,22 +311,24 @@ def return_more_info(args):
 		print (color.BOLD+color.ORANGE+'\n'.join(supported_gcodes_list)+'\n\n'+color.END)
 		print (author)
 		valid_arg += 1
-	else:	
-		if args.list_codes == True:
-			print (color.BOLD+color.RED+'\nThese are the currently supported genetic codes.\n'+color.END)
-			print (color.BOLD+color.ORANGE+'\n'.join(supported_gcodes_list)+'\n\n'+color.END)
-			valid_arg += 1	
 
-		if args.author == True:
-			print (author)
-			valid_arg += 1
+	if args.list_codes == True:
+		print (color.BOLD+color.RED+'\nThese are the currently supported genetic codes.\n'+color.END)
+		print (color.BOLD+color.ORANGE+'\n'.join(supported_gcodes_list)+'\n\n'+color.END)
+		valid_arg += 1
+		sys.exit()
+
+	if args.author == True:
+		print (author)
+		valid_arg += 1
+		sys.exit()
 
 	if args.input_file != None:
 		if os.path.isfile(args.input_file) != False:
 			if args.input_file.split('/')[-1] not in os.listdir('/'.join(args.input_file.split('/')[:-1])):
 				print (color.BOLD+color.RED+'\nError:'+color.END+color.BOLD+' The provided Fasta file '\
 				'('+color.DARKCYAN+args.input_file.split('/')[-1]+color.END+color.BOLD+')\ndoes not'\
-				' exist or is incorrectly formatted.\n\nDouble-check then try again!\n\n'+color.END) 
+				' exist or is incorrectly formatted.\n\nDouble-check then try again!\n\n'+color.END)
 				valid_arg += 1
 			elif args.input_file.endswith('WTA_NBU.Renamed.fasta') != True:
 				print (color.BOLD+'\n\nInvalid Fasta File! Only Fasta Files that were processed'\
@@ -340,18 +339,11 @@ def return_more_info(args):
 		else:
 			print (color.BOLD+color.RED+'\nError:'+color.END+color.BOLD+' The provided Fasta file '\
 			'('+color.DARKCYAN+args.input_file.split('/')[-1]+color.END+color.BOLD+')\ndoes not'\
-			' exist or is incorrectly formatted.\n\nDouble-check then try again!\n\n'+color.END) 
-			valid_arg += 1
-	
-	if args.tsv_file != None:
-		if os.path.isfile(args.tsv_file) != True:
-			print (color.BOLD+color.RED+'\nError:'+color.END+color.BOLD+' The TSV file '\
-			'('+color.DARKCYAN+args.tsv_file.split('/')[-1]+color.END+color.BOLD+')\ndoes not'\
-			' exist or is incorrectly formatted.\n\nDouble-check then try again!\n\n'+color.END) 
+			' exist or is incorrectly formatted.\n\nDouble-check then try again!\n\n'+color.END)
 			valid_arg += 1
 
 	return valid_arg
-	
+
 
 ###########################################################################################
 ###--------------------------- Does the Inital Folder Prep -----------------------------###
@@ -360,15 +352,15 @@ def return_more_info(args):
 def prep_folders(args):
 
 	OG_folder = '../'+args.input_file.split('/')[1]+'/UsearchOG/'
-	
+
 	if os.path.isdir(OG_folder) != True:
 		os.system('mkdir '+OG_folder)
 
 	if os.path.isdir(OG_folder+'OG_CompData') != True:
-		os.system('mkdir '+OG_folder+'OG_CompData')		
-		
+		os.system('mkdir '+OG_folder+'OG_CompData')
+
 	if os.path.isdir('../TranslatedTranscriptomes') != True:
-		os.system('mkdir ../TranslatedTranscriptomes')	
+		os.system('mkdir ../TranslatedTranscriptomes')
 
 
 
@@ -385,7 +377,7 @@ def check_new_start_new(some_seq, low_lim, upper_lim, old_start, codon_table):
 	## Looks for in-frame START codons in the UTR of the transcript
 	in_frame_starts = [starts.start() for starts in re.finditer('M',prime5)]
 
-	## Checks that there are NO in-frame STOP codons between the possible "new" START codon 
+	## Checks that there are NO in-frame STOP codons between the possible "new" START codon
 	## and the aligned portion of the transcript -- THIS is double checked!
 	if len(in_frame_starts) != 0:
 		if len(in_frame_stops) != 0:
@@ -400,11 +392,11 @@ def check_new_start_new(some_seq, low_lim, upper_lim, old_start, codon_table):
 
 	## Skips the double-checking if there are no GOOD potential START codons
 	if new_start == old_start:
-		updated_start = old_start 
+		updated_start = old_start
 
 	else:
 	## Double checks that there are NO IN-FRAME stop codons between the NEW-SUGGESTED Start
-	## position and the OLD-SUPPORTED stop position! 
+	## position and the OLD-SUPPORTED stop position!
 		between_new_old_start = str(Seq(some_seq[new_start:old_start]).translate(table=1)).replace('*','x')
 		in_frame_stops_check = [stops.start() for stops in re.finditer('x',between_new_old_start)]
 		in_frame_starts_check = [starts.start() for starts in re.finditer('M',between_new_old_start)]
@@ -418,7 +410,7 @@ def check_new_start_new(some_seq, low_lim, upper_lim, old_start, codon_table):
 				updated_start = new_start
 		else:
 			updated_start = new_start
-	
+
 	return updated_start
 
 
@@ -434,7 +426,7 @@ def extract_ORF(prot_dict, codon_table, args):
 	for k, v in prot_dict.items():
 
 	## Attempting to find the most-likely START (ATG) position in the transcript (tricky)
-	## Skips this if the initial Methionine (ATG) is likely present 
+	## Skips this if the initial Methionine (ATG) is likely present
 	## (e.g. the alignment position of the protein = '1')
 		prot_start = int(v[3].split('..')[0])
 		old_start = v[1]
@@ -451,10 +443,10 @@ def extract_ORF(prot_dict, codon_table, args):
 		else:
 			updated_start = old_start
 		temp = prot_dict[k][-1][updated_start:]
-	
+
 	## Uses the given genetic code to identify the stop position of the ORF
-		temp_prot = str(Seq(temp).translate(table=codon_table))						
-		if '*' in temp_prot:		
+		temp_prot = str(Seq(temp).translate(table=codon_table))
+		if '*' in temp_prot:
 			stop_pos = (temp_prot.index('*')+1)*3
 			prot_dict[k].append(temp[:stop_pos])
 		else:
@@ -466,7 +458,7 @@ def extract_ORF(prot_dict, codon_table, args):
 		# An error Xyrus introduced
 		# Not as great genetic code decision (in-frame stop)
 		# Crummy sequence/assembly quality (false in-frame stop codons)
-		
+
 	awkward_list = []
 	look_good = []
 
@@ -483,24 +475,24 @@ def extract_ORF(prot_dict, codon_table, args):
 				x.write(entry+'\n')
 	else:
 		pass
-		
+
 	print (color.BOLD+'\n\nTranslating '+color.PURPLE+'ORFs'+color.END+color.BOLD+' from'\
 	' using the '+color.DARKCYAN+args.genetic_code.title()+' genetic code'+color.END)
-	
+
 	for k, v in prot_dict.items():
-		prot_dict[k].append(str(Seq(v[-1]).translate(table=codon_table)).rstrip('*'))				
+		prot_dict[k].append(str(Seq(v[-1]).translate(table=codon_table)).rstrip('*'))
 
 	return prot_dict
-	
+
 ##########################################################################################
 ###------------ Grabs the Coding Coordinates from the OG-BLAST SpreadSheet ------------###
 ##########################################################################################
-	
+
 def prep_translations(args):
 
 	print (color.BOLD+'\n\nGrabbing useful info from the '+color.ORANGE+args.input_file\
 	.split('/')[-1]+color.END+color.BOLD+' Fasta File\nand from the '+color.ORANGE+args.tsv_file.\
-	split('/')[-1]+color.END+color.BOLD+' OG-Assignment Spreadsheet'+color.END)		
+	split('/')[-1]+color.END+color.BOLD+' OG-Assignment Spreadsheet'+color.END)
 
 	inTSV = [i.rstrip('\n') for i in open(args.tsv_file).readlines() if i != '\n']
 	inFasta = [i for i in SeqIO.parse(args.input_file,'fasta')]
@@ -514,7 +506,7 @@ def prep_translations(args):
 		for i in inTSV:
 			prot_dict.setdefault(i.split('\t')[0],[])
 			if int(i.split('\t')[6]) < int(i.split('\t')[7]):
-	## Saves the Transcript Orientation (Coding vs. Template Strand)			
+	## Saves the Transcript Orientation (Coding vs. Template Strand)
 				prot_dict[i.split('\t')[0]].append('F')
 	## Collects initial Start and Stop positions from the BLAST alignment
 				prot_dict[i.split('\t')[0]].append(int(i.split('\t')[6])-1)
@@ -523,7 +515,7 @@ def prep_translations(args):
 				prot_dict[i.split('\t')[0]].append('..'.join(i.split('\t')[-4:-2]))
 
 			if int(i.split('\t')[7]) < int(i.split('\t')[6]):
-	## Saves the Transcript Orientation (Coding vs. Template Strand)			
+	## Saves the Transcript Orientation (Coding vs. Template Strand)
 				prot_dict[i.split('\t')[0]].append('RC')
 	## Collects initial Start and Stop positions from the BLAST alignment
 				prot_dict[i.split('\t')[0]].append(int(i.split('_Len')[1].split('_')[0])-int(i.split('\t')[6]))
@@ -531,7 +523,7 @@ def prep_translations(args):
 	## Implied Amino Acid alignment positions (e.g. does the alignment start at the 1st Methionine?)
 				prot_dict[i.split('\t')[0]].append('..'.join(i.split('\t')[-4:-2]))
 
-	## Makes sure that the dictionary has the transcript in the correct orientation	
+	## Makes sure that the dictionary has the transcript in the correct orientation
 		for i in inFasta:
 			if i.description in prot_dict.keys():
 				if 'RC' == prot_dict[i.description][0]:
@@ -543,12 +535,12 @@ def prep_translations(args):
 		for i in inTSV:
 			prot_dict.setdefault(i.split('\t')[0],[])
 			if int(i.split('\t')[6]) < int(i.split('\t')[7]):
-	## Saves the Transcript Orientation (Coding vs. Template Strand)			
+	## Saves the Transcript Orientation (Coding vs. Template Strand)
 				prot_dict[i.split('\t')[0]].append('F')
 				prot_dict[i.split('\t')[0]].append(int(i.split('\t')[6])-1)
 				prot_dict[i.split('\t')[0]].append(int(i.split('\t')[7])+3)
 	## Implied Amino Acid alignment positions (e.g. does the alignment start at the 1st Methionine?)
-				prot_dict[i.split('\t')[0]].append('..'.join(i.split('\t')[-4:-2]))	
+				prot_dict[i.split('\t')[0]].append('..'.join(i.split('\t')[-4:-2]))
 			if int(i.split('\t')[7]) < int(i.split('\t')[6]):
 	## Saves the Transcript Orientation (Coding vs. Template Strand)
 				prot_dict[i.split('\t')[0]].append('RC')
@@ -558,14 +550,14 @@ def prep_translations(args):
 	## Implied Amino Acid alignment positions (e.g. does the alignment start at the 1st Methionine?)
 				prot_dict[i.split('\t')[0]].append('..'.join(i.split('\t')[-4:-2]))
 
-	## Makes sure that the dictionary has the transcript in the correct orientation				
+	## Makes sure that the dictionary has the transcript in the correct orientation
 		for i in inFasta:
 			if i.description in prot_dict.keys():
 				if 'RC' == prot_dict[i.description][0]:
 					prot_dict[i.description].append(str(i.seq.reverse_complement()))
 				else:
 					prot_dict[i.description].append(str(i.seq))
-					
+
 	return prot_dict
 
 
@@ -585,7 +577,7 @@ def round_down_three(num):
 
 def standardize_gcode(given_code):
 	if given_code == 'ciliate' or given_code == 'tga':
-		codon_table = 6	
+		codon_table = 6
 	elif given_code == 'chilodonella' or given_code == 'chilo' or given_code == 'taa':
 		codon_table = c_uncinata_table
 	elif given_code == 'blepharisma' or given_code == 'bleph':
@@ -612,12 +604,12 @@ def standardize_gcode(given_code):
 		codon_table = 1
 
 	return codon_table
-	
+
 
 ###########################################################################################
 ###------------------ Updates Spreadsheet with Updated Contig Names --------------------###
 ###########################################################################################
-	
+
 def update_spreadsheet(args, updated_spreadsheet_dict):
 	if os.path.isdir('../'+args.input_file.split('/')[1]+'/UsearchOG') != True:
 		os.system('mkdir ../'+args.input_file.split('/')[1]+'/UsearchOG/')
@@ -629,9 +621,9 @@ def update_spreadsheet(args, updated_spreadsheet_dict):
 
 	inTSV = [line.rstrip('\n') for line in open(args.tsv_file).readlines() if line != '\n'\
 	 and line.split('\t')[0] in updated_spreadsheet_dict.keys()]
-	
+
 	updatedTSV = [updated_spreadsheet_dict[line.split('\t')[0]]+'\t'+'\t'.join(line.split('\t')[1:]) for line in inTSV]
-	
+
 	with open(args.tsv_out,'w+') as w:
 		w.write('\n'.join(updatedTSV))
 
@@ -639,7 +631,7 @@ def update_spreadsheet(args, updated_spreadsheet_dict):
 ###########################################################################################
 ###-------------------- Updates Log With OG Assignment Information ---------------------###
 ###########################################################################################
-	
+
 def update_log(filename, codon_table):
 
 	if os.path.isdir('../PostAssembly_Logs/') != True:
@@ -649,15 +641,15 @@ def update_log(filename, codon_table):
 
 	ntd_ORF = [i for i in SeqIO.parse(filename.split('.fas')[0]+'_'+gcode.title()+'_ORF.fasta','fasta')]
 	aa_ORF = [i for i in SeqIO.parse(filename.split('.fas')[0]+'_'+gcode.title()+'_ORF.aa.fasta','fasta')]
-	
+
 	min_ntd_ORF = str(min([len(i.seq) for i in ntd_ORF]))
 	max_ntd_ORF = str(max([len(i.seq) for i in ntd_ORF]))
 	avg_ntd_ORF = '%.2f' % (sum([len(i.seq) for i in ntd_ORF])/float(len(ntd_ORF)))
-	
+
 	min_aa_ORF = str(min([len(i.seq) for i in aa_ORF]))
 	max_aa_ORF = str(max([len(i.seq) for i in aa_ORF]))
 	avg_aa_ORF = '%.2f' % (sum([len(i.seq) for i in aa_ORF])/float(len(aa_ORF)))
-	
+
 	for Logname in os.listdir(os.curdir+'./PostAssembly_Logs/'):
 		if Logname.startswith(filename.split('/')[2].split('_WTA')[0]) and Logname.endswith('Log.txt'):
 			with open('../PostAssembly_Logs/'+Logname,'a') as LogFile:
@@ -666,13 +658,13 @@ def update_log(filename, codon_table):
 				LogFile.write('Protein ORFs\t'+str(len(aa_ORF))+'\tn/a\tn/a\n')
 				LogFile.write('Protein ORF Lengths\t'+avg_aa_ORF+'\t'+min_aa_ORF+'\t'+max_aa_ORF+'\n')
 
-	
+
 ##########################################################################################
 ###----------------------- Write File with Provided Genetic Code ----------------------###
 ##########################################################################################
 
-def write_data_out(prot_dict, codon_table, args):		
-	
+def write_data_out(prot_dict, codon_table, args):
+
 	update_spreadsheet_dict = {}
 
 	for k, v in prot_dict.items():
@@ -682,12 +674,12 @@ def write_data_out(prot_dict, codon_table, args):
 		else:
 			new_name = k.split('_Len')[0]+'_Len'+str(len(v[-2]))+'_'+'_'.join(k.split('_')[-2:])
 			update_spreadsheet_dict[k] = new_name
-			
+
 
 	with open(args.ntd_out,'w+') as w:
 		print (color.BOLD+'\n\nWriting FASTA file with '+color.PURPLE+'ORF'+color.END+color.BOLD\
 		+' sequences using the '+color.DARKCYAN+args.genetic_code.title()+' genetic code'+color.END)
-	
+
 		for k, v in prot_dict.items():
 			w.write('>'+update_spreadsheet_dict[k]+'\n'+str(v[-2])+'\n')
 
@@ -697,35 +689,35 @@ def write_data_out(prot_dict, codon_table, args):
 
 		for k, v in prot_dict.items():
 			w.write('>'+update_spreadsheet_dict[k]+'\n'+str(v[-1])+'\n')
-				
+
 	return update_spreadsheet_dict
 
 
 ##########################################################################################
 ###--------------------- Cleans up the Folder and Moves Final Files -------------------###
 ##########################################################################################
-					
+
 def clean_up(args):
-	
+
 	if args.input_file.split('.fas')[0].split('/')[-1]+'_StopCodonStats.tsv' in os.listdir(args.home_folder):
 		os.system('mv '+args.input_file.split('.fas')[0]+'_StopCodonStats.tsv '+args.StopFreq)
-	
+
 	os.system('mv '+args.tsv_file+' '+args.Usearch_Folder)
 	os.system('mv '+args.input_file+' '+args.Usearch_Folder)
 
 	if args.no_RP == True:
 		if os.path.isdir(args.ForPartials+'ToRename/') != True:
 			os.system('mkdir '+args.ForPartials+'ToRename/')
-		
+
 		os.system('cp '+args.ntd_out+' '+args.ForPartials+'ToRename/')
 		os.system('cp '+args.aa_out+' '+args.ForPartials+'ToRename/')
 		os.system('cp '+args.tsv_out+' '+args.ForPartials+'ToRename/')
 
-	else:	
+	else:
 		os.system('cp '+args.tsv_out+' '+args.ForPartials)
 		os.system('cp '+args.ntd_out+' '+args.ForPartials)
 		os.system('cp '+args.aa_out+' '+args.ForPartials)
-		
+
 	os.system('mv '+args.home_folder+' ../TranslatedTranscriptomes')
 
 
@@ -739,14 +731,14 @@ def next_script(args):
 	color.BOLD+',\n'+color.DARKCYAN+args.aa_out.split('/')[-1]+color.END+color.BOLD+', and\n'\
 	+color.DARKCYAN+args.tsv_out.split('/')[-1]+color.END+color.BOLD+',\nwhich are in the '+\
 	color.ORANGE+args.home_folder.split('/')[-1]+' Folder'+color.END)
-	
+
 	if args.no_RP == True:
 		print(color.BOLD+'\n\nNext Script is: '+color.GREEN+'7_FinalRename.py'+color.END+color.BOLD+\
 		' in the '+color.PURPLE+'RemovePartials Folder'+color.END+color.BOLD+'\nwith a copy of'\
 		' the outputs of this script!'+color.END)
 		print(color.BOLD+'\n\nRemember that you have chosen '+color.RED+'NOT '+color.END+color.BOLD+\
 		'to remove partials\nand are skipping to the renaming step!\n\n'+color.END)
-	
+
 	else:
 		print(color.BOLD+'\n\nNext Script is: '+color.GREEN+'6_FilterPartials.py'+color.END+color.BOLD+\
 		' in the '+color.PURPLE+'FinalizeTranscripts Folder'+color.END+color.BOLD+'\nwith a copy of'\
@@ -757,27 +749,27 @@ def next_script(args):
 ##########################################################################################
 ###--------------- Checks Command Line Arguments and Calls on Functions ---------------###
 ##########################################################################################
-							
+
 def main():
 
 	args = check_args()
-	
+
 	prep_folders(args)
 
 	codon_table = standardize_gcode(args.genetic_code.lower())
-	
+
 	prot_dict_Prepped = prep_translations(args)
 
 	prot_dict_Final = extract_ORF(prot_dict_Prepped, codon_table, args)
 
 	new_spreadsheet_names = write_data_out(prot_dict_Final, codon_table, args)
-	
+
 	update_spreadsheet(args, new_spreadsheet_names)
-	
+
 #	update_log(fasta_file, gcode)
-	
-	clean_up(args) 
+
+	clean_up(args)
 
 	next_script(args)
-	
+
 main()
